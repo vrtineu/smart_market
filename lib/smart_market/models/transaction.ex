@@ -4,8 +4,10 @@ defmodule SmartMarket.Models.Transaction do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @primary_key {:id, :binary_id, autogenerate: true}
+  @foreign_key_type :binary_id
   schema "transactions" do
-    field(:customer_id, :string)
+    field(:customer_id, :binary_id)
     field(:status, :string, default: "pending")
     has_many(:transaction_products, SmartMarket.Models.TransactionProducts)
 

@@ -3,7 +3,9 @@ defmodule SmartMarket.QueueManager do
 
   # Public API
   def start_link(_opts) do
-    GenServer.start_link(__MODULE__, %{transaction_queue: []}, name: __MODULE__)
+    GenServer.start_link(__MODULE__, %{transaction_queue: [], transactions_processed: 0},
+      name: __MODULE__
+    )
   end
 
   def enqueue_transaction(transaction) do
@@ -20,21 +22,33 @@ defmodule SmartMarket.QueueManager do
 
   # GenServer Callbacks
   def init(initial_state) do
+    :ets.new(:transaction_queue, [:named_table, :ordered_set, :public])
     {:ok, initial_state}
   end
 
   def handle_cast({:enqueue_transaction, transaction}, state) do
-    new_queue = [transaction | state.transaction_queue]
+    transaction_id = UUID.uuid4()
+    updated_transaction = Map.put(transaction, :id, transaction_id)
+
+    :ets.insert(:transaction_queue, {transaction_id, updated_transaction})
+    new_queue = [updated_transaction | state.transaction_queue]
     {:noreply, %{state | transaction_queue: new_queue}}
   end
 
-  def handle_call(:dequeue_transaction, _from, %{transaction_queue: []} = state) do
-    {:reply, nil, state}
-  end
-
   def handle_call(:dequeue_transaction, _from, state) do
-    [next_transaction | rest_queue] = state.transaction_queue
-    {:reply, next_transaction, %{state | transaction_queue: rest_queue}}
+    case :ets.first(:transaction_queue) do
+      :"$end_of_table" ->
+        {:reply, nil, state}
+
+      transaction_id ->
+        [{_id, transaction}] = :ets.lookup(:transaction_queue, transaction_id)
+        :ets.delete(:transaction_queue, transaction_id)
+        # Ensure transactions_processed is initialized in the state, increment it here.
+        new_state = Map.update!(state, :transactions_processed, &(&1 + 1))
+        # Remove the transaction from the local state queue as well, if necessary.
+        new_queue = Enum.reject(state.transaction_queue, fn t -> t.id == transaction_id end)
+        {:reply, transaction, %{new_state | transaction_queue: new_queue}}
+    end
   end
 
   def handle_call(:peek_transaction_queue, _from, state) do

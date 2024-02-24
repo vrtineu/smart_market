@@ -7,7 +7,6 @@ defmodule SmartMarket.Models.Product do
   schema "products" do
     field(:name, :string)
     field(:price, :decimal)
-    field(:quantity, :integer)
     has_many(:transaction_products, SmartMarket.Models.TransactionProducts)
 
     timestamps()

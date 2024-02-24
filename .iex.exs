@@ -36,3 +36,15 @@ IO.inspect(transactions_before, label: "Transactions Before Processing")
 SmartMarket.TransactionProcessor.process_transaction()
 transactions_after = SmartMarket.QueueManager.peek_transaction_queue()
 IO.inspect(transactions_after, label: "Transactions After Processing")
+
+
+## Testing with concurrent transactions
+
+for i <- 1..10 do
+  data = %{product_id: "123", client_id: "abc-#{i}"}
+  Task.start(fn -> SmartMarket.QueueManager.enqueue_transaction(data) end)
+end
+
+for _ <- 1..11 do
+  Task.start(fn -> SmartMarket.TransactionProcessor.process_transaction() end)
+end

@@ -40,7 +40,7 @@ defmodule SmartMarket.Transactions do
   ## Examples
 
       iex> SmartMarket.Transactions.create_transaction(%{customer_id: "1", status: "pending"})
-      %Transaction{}
+      {:ok, %Transaction{}}
 
   """
   def create_transaction(attrs \\ %{}) do
@@ -55,7 +55,7 @@ defmodule SmartMarket.Transactions do
   ## Examples
 
       iex> SmartMarket.Transactions.update_transaction(%Transaction{}, %{status: "completed"})
-      %Transaction{}
+      {:ok, %Transaction{}}
 
   """
   def update_transaction(%Transaction{} = transaction, attrs) do

@@ -24,3 +24,6 @@ smart_market-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# Docker
+/docker/

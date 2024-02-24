@@ -10,8 +10,9 @@ defmodule SmartMarket.Application do
     children = [
       # Starts a worker by calling: SmartMarket.Worker.start_link(arg)
       # {SmartMarket.Worker, arg}
-      {DynamicSupervisor, strategy: :one_for_one, name: SmartMarket.WorkerSupervisor},
-      SmartMarket.QueueManager
+      SmartMarket.Repo,
+      SmartMarket.QueueManager,
+      {DynamicSupervisor, strategy: :one_for_one, name: SmartMarket.WorkerSupervisor}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

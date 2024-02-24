@@ -41,10 +41,10 @@ To enqueue a transaction, use the `SmartMarket.QueueManager.enqueue_transaction/
 SmartMarket.QueueManager.enqueue_transaction(%{client_id: "abc", product_id: "123"})
 ```
 
-To process the transactions, use the `SmartMarket.TransactionProcessor.process_transaction/0`
+To process the transactions, use the `SmartMarket.Processor.process_transaction/0`
 
 ```elixir
-SmartMarket.TransactionProcessor.process_transaction()
+SmartMarket.Processor.process_transaction()
 ```
 
 ## Learning Objectives

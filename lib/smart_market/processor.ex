@@ -1,4 +1,4 @@
-defmodule SmartMarket.TransactionProcessor do
+defmodule SmartMarket.Processor do
   def process_transaction do
     Task.start(fn ->
       case SmartMarket.QueueManager.dequeue_transaction() do

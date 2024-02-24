@@ -33,7 +33,7 @@ IO.inspect(ets_table, label: "ETS Table Contents")
 transactions_before = SmartMarket.QueueManager.peek_transaction_queue()
 IO.inspect(transactions_before, label: "Transactions Before Processing")
 
-SmartMarket.TransactionProcessor.process_transaction()
+SmartMarket.Processor.process_transaction()
 transactions_after = SmartMarket.QueueManager.peek_transaction_queue()
 IO.inspect(transactions_after, label: "Transactions After Processing")
 
@@ -46,5 +46,5 @@ for i <- 1..10 do
 end
 
 for _ <- 1..11 do
-  Task.start(fn -> SmartMarket.TransactionProcessor.process_transaction() end)
+  Task.start(fn -> SmartMarket.Processor.process_transaction() end)
 end
